@@ -1,0 +1,56 @@
+# from django.conf.urls import url
+from django.test import TestCase, Client
+from django.contrib.auth import get_user_model
+
+# generating urls for admin page
+from django.urls import reverse
+
+# Client permite hacer request
+
+
+class AdminSiteTests(TestCase):
+    """
+    Test django admin site
+    """
+
+    # setup funtion that run before any test
+    def setUp(self):
+        self.client = Client()
+
+        self.admin_user = get_user_model().objects.create_superuser(
+            '1234@gmail.com',
+            '1234'
+        )
+
+        self.client.force_login(self.admin_user)
+        self.user = get_user_model().objects.create_user(
+            email='da@gmail.com',
+            password='3567',
+            # name='pepe'
+        )
+
+    def test_for_user_listed(self):
+        """Test that user are listed on user page"""
+        url = reverse('admin:core_user_changelist')
+        res = self.client.get(url)
+
+        self.assertContains(res, self.user.name)
+        self.assertContains(res, self.user.email)
+
+    def test_user_change_page(self):
+        """
+        Test that the user edit page work
+        """
+        # geting
+        url = reverse('admin:core_user_change', args=[self.user.id])
+        res = self.client.get(url)
+
+        self.assertEqual(res.status_code, 200)
+
+    def test_create_user_page(self):
+        """ Test that create user page work"""
+
+        url = reverse('admin:core_user_add')
+        res = self.client.get(url)
+
+        self.assertEqual(res.status_code, 200)
