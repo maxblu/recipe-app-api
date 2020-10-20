@@ -20,4 +20,4 @@ class IngredientSerializer(serializers.ModelSerializer):
         model = Ingredient
         fields = ['id', 'name']
 
-        read_only_fields = ['id', ]
+        read_only_fields = ('id',)

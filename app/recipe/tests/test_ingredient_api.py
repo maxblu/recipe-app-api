@@ -10,7 +10,7 @@ from core.models import Ingredient
 from recipe.serializers import IngredientSerializer
 
 
-INTREDIENT_URL = reverse('recipe:ingredient-list')
+INGREDIENT_URL = reverse('recipe:ingredient-list')
 
 
 class TestsPublicIngredientApi(TestCase):
@@ -24,7 +24,7 @@ class TestsPublicIngredientApi(TestCase):
     def test_login_required(self):
         """Test login is required to acces"""
 
-        res = self.client.get(INTREDIENT_URL)
+        res = self.client.get(INGREDIENT_URL)
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
@@ -36,7 +36,9 @@ class TestPrivateIngredientApi(TestCase):
 
     def setUp(self):
 
-        self.user = get_user_model().objects.create_user('1234@1234.com', '12345')
+        self.user = get_user_model().objects.create_user(
+            '1234@1234.com',
+            '12345')
         self.client = APIClient()
 
         self.client.force_authenticate(user=self.user)
@@ -47,7 +49,7 @@ class TestPrivateIngredientApi(TestCase):
         Ingredient.objects.create(user=self.user, name='comino')
         Ingredient.objects.create(user=self.user, name='perro')
 
-        res = self.client.get(INTREDIENT_URL)
+        res = self.client.get(INGREDIENT_URL)
 
         ingredients = Ingredient.objects.all().order_by('-name')
         serializer = IngredientSerializer(ingredients, many=True)
@@ -66,7 +68,7 @@ class TestPrivateIngredientApi(TestCase):
 
         ingredient = Ingredient.objects.create(user=self.user, name='some')
 
-        res = self.client.get(INTREDIENT_URL)
+        res = self.client.get(INGREDIENT_URL)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 1)
@@ -74,3 +76,22 @@ class TestPrivateIngredientApi(TestCase):
 
     def test_ingredient_created_successful(self):
         """ test if ingredient is created"""
+
+        pyload = {
+            'name': 'cavish'
+        }
+
+        self.client.post(INGREDIENT_URL, pyload)
+
+        exist = Ingredient.objects.filter(
+            user=self.user,
+            name=pyload['name']).exists()
+
+        self.assertTrue(exist)
+
+    def test_create_ingredient_invalid(self):
+        """Test creating ingreadient invalid"""
+
+        res = self.client.post(INGREDIENT_URL, {'name': ''})
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
