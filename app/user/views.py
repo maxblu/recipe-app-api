@@ -1,4 +1,4 @@
-from django.db.models.manager import Manager
+
 from rest_framework import generics, authentication, permissions
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
@@ -25,6 +25,6 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get_object(self):
-        """Retrieve and return authentuicated user  """
+        """Retrieve and return authentuicated user """
 
         return self.request.user

@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext as _
 
+from core import models
 # Register your models here.
 
 
@@ -30,3 +31,4 @@ class UserAdmin (BaseUserAdmin):
 
 
 admin.site.register(get_user_model(), UserAdmin)
+admin.site.register(models.Tag)
