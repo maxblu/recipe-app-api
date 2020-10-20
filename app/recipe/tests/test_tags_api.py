@@ -11,7 +11,7 @@ from recipe.serializers import TagSerializer
 TAG_URL = reverse('recipe:tag-list')
 
 
-class PublicApiTests(TestCase):
+class TestPublicTagsApi(TestCase):
     """Test the public avalidable api"""
 
     def setUp(self):
