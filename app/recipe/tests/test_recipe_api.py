@@ -213,7 +213,7 @@ class PrivateRecipeApi(TestCase):
         }
 
         url = detail_url(recipe.id)
-        res = self.client.put(url, pyload)
+        self.client.put(url, pyload)
 
         recipe.refresh_from_db()
         self.assertEqual(recipe.title, pyload['title'])
