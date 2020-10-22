@@ -51,9 +51,26 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     authentication_classes = (TokenAuthentication,)
 
+    def _params_to_ints(self, qs):
+        """Convert list of string id in a list of integers  """
+        return [int(iD) for iD in qs.split(',')]
+
     def get_queryset(self):
         """ Retrieve recipies for the authenn user"""
-        return self.queryset.filter(user=self.request.user)
+        tags = self.request.query_params.get('tags')
+        ingredients = self.request.query_params.get('ingredients')
+
+        queryset = self.queryset
+
+        if tags:
+            tags_id = self._params_to_ints(tags)
+            queryset = queryset.filter(tags__id__in=tags_id)
+
+        if ingredients:
+            ingredients_id = self._params_to_ints(ingredients)
+            queryset = queryset.filter(ingredients__id__in=ingredients_id)
+
+        return queryset.filter(user=self.request.user)
 
     def get_serializer_class(self):
         """retrieve a serilizer class for a spcific action like retrieve"""
