@@ -1,5 +1,4 @@
 
-
 from rest_framework import serializers
 from core.models import Tag, Ingredient, Recipe
 
@@ -55,3 +54,13 @@ class RecipeDetailSerializer(RecipeSerializer):
 
     ingredients = IngredientSerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
+
+
+class RecipeImageSerializer(serializers.ModelSerializer):
+    """Serialize for uploding image to recipe"""
+
+    class Meta:
+        model = Recipe
+        fields = ['id', 'image']
+
+        read_only = ('id',)
